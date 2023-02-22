@@ -19,6 +19,7 @@ for (let i = 0; i <= 40; i += 5) {
 // Create the table element
 let table = document.createElement("table");
 table.style.width = "90%"; // Set the table width to 90% of the parent element
+table.className = "keyb";
 let headerRow = document.createElement("tr");
 headerRow.style.backgroundColor = "rgba(222, 196, 255, 0.2)";
 let timeHeader = document.createElement("th");
