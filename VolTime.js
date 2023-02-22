@@ -8,15 +8,10 @@ function setFMS(i, text) {
 // adding draggable chart dependencies
 document.head.appendChild(Object.assign(document.createElement("script2"),{src:"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"}));
 document.head.appendChild(Object.assign(document.createElement("script3"),{src:"https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.3/dist/chartjs-plugin-dragdata.min.js"}));
+
+
 const tableData = [];
-
 // Add initial time-volume pairs to the array
-for (let i = 0; i <= 40; i += 5) {
-  tableData.push({ time: i, volume: 0 });
-}
-
-// Define the table data
-let tableData = [];
 for (let i = 0; i <= 40; i += 5) {
   tableData.push({ time: i, volume: 0 });
 }
@@ -25,6 +20,7 @@ for (let i = 0; i <= 40; i += 5) {
 let table = document.createElement("table");
 table.style.width = "90%"; // Set the table width to 90% of the parent element
 let headerRow = document.createElement("tr");
+headerRow.style.backgroundColor = "rgba(222, 196, 255, 0.2)";
 let timeHeader = document.createElement("th");
 timeHeader.style.backgroundColor = "rgba(0, 196, 255, 0.2)"; // Set 20% transparent light blue background color
 timeHeader.innerHTML = "Time";
