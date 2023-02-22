@@ -15,6 +15,73 @@ for (let i = 0; i <= 40; i += 5) {
   tableData.push({ time: i, volume: 0 });
 }
 
+// Define the table data
+let tableData = [];
+for (let i = 0; i <= 40; i += 5) {
+  tableData.push({ time: i, volume: 0 });
+}
+
+// Create the table element
+let table = document.createElement("table");
+table.style.width = "90%"; // Set the table width to 90% of the parent element
+let headerRow = document.createElement("tr");
+let timeHeader = document.createElement("th");
+timeHeader.style.backgroundColor = "rgba(0, 196, 255, 0.2)"; // Set 20% transparent light blue background color
+timeHeader.innerHTML = "Time";
+headerRow.appendChild(timeHeader);
+table.appendChild(headerRow);
+
+// Create the first row (header row) with time values
+for (let i = 0; i < tableData.length; i++) {
+  let timeCell = document.createElement("th");
+  timeCell.innerHTML = tableData[i].time;
+  headerRow.appendChild(timeCell);
+}
+
+// Create the second row with volume values
+let volumeRow = document.createElement("tr");
+let volumeHeader = document.createElement("td");
+volumeHeader.style.backgroundColor = "rgba(0, 196, 255, 0.2)"; // Set 20% transparent light blue background color
+volumeHeader.innerHTML = "Volume";
+volumeRow.appendChild(volumeHeader);
+for (let i = 0; i < tableData.length; i++) {
+  let volumeCell = document.createElement("td");
+  volumeCell.setAttribute("contenteditable", "true");
+  volumeCell.innerHTML = tableData[i].volume;
+  volumeRow.appendChild(volumeCell);
+}
+table.appendChild(volumeRow);
+
+// Set the width of the columns to be equal except for the first column
+let headerCells = headerRow.querySelectorAll("th");
+let volumeCells = volumeRow.querySelectorAll("td");
+let cellWidth = (100 / (tableData.length + 1)) + "%";
+headerCells.forEach((cell, index) => {
+  if (index === 0) {
+    cell.style.width = "";
+  } else {
+    cell.style.width = cellWidth;
+  }
+});
+volumeCells.forEach((cell, index) => {
+  if (index === 0) {
+    cell.style.width = "";
+  } else {
+    cell.style.width = cellWidth;
+  }
+});
+
+// Insert the table at the top of the #description element
+let description = document.getElementById("description");
+description.insertBefore(table, description.firstChild);
+
+// Add event listeners to update the table data when cells are edited
+volumeCells.forEach((cell, index) => {
+  cell.addEventListener("input", (event) => {
+    tableData[index-1].volume = parseInt(event.target.innerHTML);
+  });
+});
+
 // Split time interval into smaller intervals and calculate volume values
 function intervalChange(newIntervalSize){
 const newIntervals = [];
