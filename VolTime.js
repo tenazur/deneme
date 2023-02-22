@@ -15,10 +15,9 @@ for (let i = 0; i <= 40; i += 5) {
   tableData.push({ time: i, volume: 0 });
 }
 
-function intervalChange(){
 // Split time interval into smaller intervals and calculate volume values
+function intervalChange(newIntervalSize){
 const newIntervals = [];
-const newIntervalSize = 3;
 const endTime = 40;
 let currentIndex = 0;
 
