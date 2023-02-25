@@ -10,6 +10,87 @@ document.head.appendChild(Object.assign(document.createElement("script2"),{src:"
 document.head.appendChild(Object.assign(document.createElement("script3"),{src:"https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.3/dist/chartjs-plugin-dragdata.min.js"}));
 
 
+//Create a volume slider
+// create the slider element
+var $slider = $('<div>', {
+  id: 'v0',
+  'aria-label': 'Volume',
+  role: 'slider',
+  class: 'ui-slider ui-corner-all ui-slider-vertical ui-widget ui-widget-content',
+  style: 'opacity: 1;'
+});
+
+// create the slider range element
+var $sliderRange = $('<div>', {
+  class: 'ui-slider-range ui-corner-all ui-widget-header ui-slider-range-min',
+  style: 'height: 100%;'
+}).appendTo($slider);
+
+// create the slider handle element
+var $sliderHandle = $('<span>', {
+  tabindex: '0',
+  class: 'ui-slider-handle ui-corner-all ui-state-default',
+  style: 'bottom: 100%;'
+}).appendTo($slider);
+
+// add the slider to the DOM as the first child of the description element
+$('#description').prepend($slider);
+
+// initialize the slider using jQuery UI library
+$slider.slider({
+  orientation: 'vertical',
+  range: 'min',
+  min: 0,
+  max: 1,
+  value: 50,
+  slide: function(event, ui) {
+    // set the value of the slider handle
+    $sliderHandle.css('bottom', ui.value + '%');
+  }
+});
+
+//////
+const $slider = $('<div>', {
+  id: 'slider',
+  class: 'ui-slider ui-corner-all ui-slider-vertical ui-widget ui-widget-content',
+  'aria-label': 'Volume',
+  role: 'slider',
+}).prependTo('#description');
+
+$('<div>', {
+  class: 'ui-slider-range ui-corner-all ui-widget-header ui-slider-range-min',
+  style: 'height: 100%;',
+}).appendTo($slider);
+
+$('<span>', {
+  class: 'ui-slider-handle ui-corner-all ui-state-default',
+  tabindex: '0',
+  style: 'bottom: 100%;',
+}).appendTo($slider);
+
+// set up event handlers
+$slider.slider({
+  orientation: 'vertical',
+  range: 'min',
+  min: 0,
+  max: 100,
+  step: 1,
+  value: 100,
+  slide: function (event, ui) {
+    masterGain.gain.value = ui.value/100;
+  },
+});
+
+$('#inputSlider').on('input', function() {
+  const val = $(this).val();
+  $slider.slider('value', val);
+  masterGain.gain.value = val/100;
+});
+
+// set initial values
+$slider.slider('value', 50);
+masterGain.gain.value = 0.5;
+
 const tableData = [];
 // Add initial time-volume pairs to the array
 for (let i = 0; i <= 40; i += 5) {
