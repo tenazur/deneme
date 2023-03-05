@@ -125,7 +125,7 @@ $vslider.slider({
       handle.on('mouseover', function(event) {
         var sliderval = Math.pow($vslider.slider('value')/100,3)*100;
         if (calparams['done'] === 0 && sliderval === 100 && typeof calparams['100'] === 'undefined') {
-            if(bMute === 0){toggleMute()};
+            if(context.state == 'suspended'){document.querySelector("#mute").click()};
             setPreset(0.18, 0.21, 0.24, 0.27, 0.3, 0.34, 0.38, 0.42, 0.46, 0.5, "White");
             var offset= 0.99-Math.max(...currentLevel)
             for (var i = 0; i < iNUMBERBANDS; ++i) {
