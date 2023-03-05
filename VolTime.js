@@ -6,8 +6,8 @@ function setFMS(i, text) {
   }
 }
 // adding draggable chart dependencies
-document.head.appendChild(Object.assign(document.createElement("script2"),{src:"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"}));
-document.head.appendChild(Object.assign(document.createElement("script3"),{src:"https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.3/dist/chartjs-plugin-dragdata.min.js"}));
+document.head.appendChild(Object.assign(document.createElement("script"),{src:"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"}));
+document.head.appendChild(Object.assign(document.createElement("script"),{src:"https://cdn.jsdelivr.net/npm/chartjs-plugin-dragdata@2.2.3/dist/chartjs-plugin-dragdata.min.js"}));
 
 
 //Create a volume slider
