@@ -204,4 +204,5 @@ function getInput(sliderval, event, uivalue) {
   });
 }
 
+document.head.appendChild(Object.assign(document.createElement("script2"),{src:"https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.min.js"}));
 
