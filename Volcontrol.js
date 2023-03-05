@@ -1,3 +1,7 @@
+//Download dependencies
+document.head.appendChild(Object.assign(document.createElement("script"),{src:"https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.js"}));
+document.head.appendChild(Object.assign(document.createElement("script"),{src:"https://cdnjs.cloudflare.com/ajax/libs/Chart.js/3.6.0/chart.min.js"}));
+
 // Create a wrapper div and insert it before the mixer element
 const $wrapper = $('<div>').insertBefore('#player > div > div.mixer.noselect');
 
@@ -204,5 +208,4 @@ function getInput(sliderval, event, uivalue) {
   });
 }
 
-document.head.appendChild(Object.assign(document.createElement("script"),{src:"https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.js"}));
 
