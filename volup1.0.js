@@ -44,8 +44,8 @@ let $playerValue;
 let $precalibration;
 let addRowTocTable2;
 let $cdialog;
-let  maxDbval = 100;
-let  calfactor = 24;
+let maxDbval = 100.39;
+let calfactor = 16.95;
 //styles
 
 $("<style>")
@@ -62,8 +62,11 @@ $("<style>")
     margin-top: 20px;
   }
     .slider-value-small {
+    position: absolute;
+    margin-top: 5px;
+    margin-left: 12px;
     font-family: 'Orbitron Mono', monospace;
-    font-size: 1.4em;
+    font-size: 2em;
     color: #f0f0f0;
     text-shadow: 2px 2px 2px rgba(0,0,0,0.5);
     opacity: 0.8;
@@ -108,18 +111,18 @@ $("<style>")
     transition: box-shadow 0.25s linear;
   }
   .ui-slider-horizontal .ui-slider-handle {
-    top: auto !important;
-    margin-left: 0px;
-    border: 2px solid #777 !important;
-    width: 70px ;
-    height: 30px ;
-    outline: none;
-    cursor: pointer !important;
-    background-clip: content-box;
-    padding: 4px;
-    box-shadow: inset 0 0 0 4px rgb(25,27,29);
-    transition: box-shadow 0.25s linear;
-    background: #12131a;
+      top: auto !important;
+      margin-left: 0px;
+      /* border: 2px solid #777 !important; */
+      /* width: 70px; */
+      height: 38px;
+      outline: none;
+      cursor: pointer !important;
+      background-clip: content-box;
+      padding: 4px;
+      /* box-shadow: inset 0 0 0 4px rgb(25,27,29); */
+      /* transition: box-shadow 0.25s linear; */
+      background: #12131a;
   }
   .ui-slider-horizontal .ui-slider-range{
   border: 1px solid #000000;
@@ -150,6 +153,9 @@ $("<style>")
     filter:invert(1)
   }
 
+myIMageButton{
+  filter; invert(0.8) sepia(1) hue-rotate(45deg)brightness(0.8)
+}
   `
   )
   .appendTo("head");
@@ -274,14 +280,16 @@ const $sliderWrapper = $("<div>", {
 //sağ flex
 const $rightWrapper = $("<div>", {
   id: "maingraph",
-  style: "margin: 5px; display: flex; justify-content: top;  align-self: flex-start; align-items: center; flex-direction: column;  height: inherit; padding: 4px;"
+  style:
+    "margin: 5px; display: flex; flex: 1; justify-content: top;  align-self: flex-start; align-items: center; flex-direction: column;  height: inherit; padding: 4px;",
 }).appendTo($voltimemanipulator);
 
-
 //üst menü
-const $bwidget = $("<div>",{
-//class: "hand",
-style: "padding: 4px"
+const $bwidget = $("<div>", {
+  //class: "hand",
+  padding: "4px;",
+  style:
+    "lex: 1 1; display: flex; flex-direction: row; justify-content: space-evenly; padding: 4px; width: 100%; font-size: 1.5em;",
 }).appendTo($rightWrapper);
 
 $("<span>", {
@@ -290,16 +298,40 @@ $("<span>", {
   margin: "2px",
   text: "Kalibrasyon",
   title: "Kalibrasyon işlemine başla",
-  onclick: "if(!$precalibration){calibrationsection()}"
+  onclick: "if(!$precalibration){calibrationsection()}",
 }).appendTo($bwidget);
+
+$bwidget.append(" &nbsp;&#8226;&nbsp; ");
 
 $("<span>", {
   class: "actionlink",
   role: "button",
   margin: "2px",
-  text: "   Max En Yüksek",
-  title: "Tüm Sliderları Orantılı Artır",
-  onclick: "slidersMaxx()"
+  text: "Slider MAX!!",
+  title: "Tüm sliderları orantılı olarak artır",
+  onclick: "slidersMaxx()",
+}).appendTo($bwidget);
+
+$bwidget.append(" &nbsp;&#8226;&nbsp; ");
+
+$("<span>", {
+  class: "actionlink",
+  role: "button",
+  margin: "2px",
+  text: "Dışa Aktar",
+  title: "Zaman volüm grafik verisini dışa aktar",
+  onclick: "exportGraphData()",
+}).appendTo($bwidget);
+
+$bwidget.append(" &nbsp;&#8226;&nbsp; ");
+
+$("<span>", {
+  class: "actionlink",
+  role: "button",
+  margin: "2px",
+  text: "İçe Aktar",
+  title: "Zaman volüm grafik verisini dışa aktar",
+  onclick: "importGraphData()",
 }).appendTo($bwidget);
 
 //slider value
@@ -337,9 +369,7 @@ $(function () {
     stop: function (event, ui) {
       sliderUpdate(ui.value);
     },
-    change: function (event, ui) {
-      $sliderValue.text(Math.round(dbFromGain(masterGain.gain.value)));
-    },
+    change: function (event, ui) {},
     create: function (event) {
       $sliderValue.appendTo($vslider.parent());
       sliderUpdate(25);
@@ -384,28 +414,25 @@ function createGraphData(tempArray2) {
   }));
 }
 
-
-function calibrationsection(){
-
+function calibrationsection() {
   // Add a new div for the volume control and insert it into the left div
-  $precalibration = $('<div>', {
-    id: 'precalib',
-    class: 'content',
-    margin: '4px',
+  $precalibration = $("<div>", {
+    id: "precalib",
+    class: "content",
+    margin: "4px",
   }).appendTo($rightWrapper);
 
   $precalibration.css({
-    flex: '1', // Allow volcontrol to expand horizontally with left div
-    margin: 'auto',
-    display: 'flex',
+    flex: "0.8 1", // Allow volcontrol to expand horizontally with left div
+    margin: "auto",
+    display: "flex",
     height: $right.height(),
-    'align-items': 'center',
+    "align-items": "center",
   });
 
-
-  const $calibinfo = $('<div>', {
-      class: 'calibinfo',
-      style: "height: 100%; display: flex; flex-direction: column;"
+  const $calibinfo = $("<div>", {
+    class: "calibinfo",
+    style: "height: 100%; display: flex; flex-direction: column;",
   }).appendTo($precalibration);
 
   $("<h2>", {
@@ -413,7 +440,8 @@ function calibrationsection(){
   }).appendTo($calibinfo);
 
   $("<p>", {
-    html: "Tüm seviyeleri istediğniz seviyeye getirin ve ses biçimini profilini ayarlayın.",
+    html:
+      "Tüm seviyeleri istediğniz seviyeye getirin ve ses biçimini profilini ayarlayın.",
   }).appendTo($calibinfo);
 
   $("#controls > div:nth-child(7) > p").clone().appendTo($calibinfo);
@@ -423,52 +451,59 @@ function calibrationsection(){
   }).prependTo($calibinfo.children().last());
 
   $("<p>", {
-    text: "Kalibrasyon için en yüksek slider maximuma ulaştırılacak."
+    text: "Kalibrasyon için en yüksek slider maximuma ulaştırılacak.",
   }).appendTo($calibinfo);
 
-  $calibinfo.find('*').css("padding", "4px 0px");
+  $calibinfo.find("*").css("padding", "4px 0px");
 
-  const $donebutton = $('<button>', {
+  const $donebutton = $("<button>", {
     title: "YÜKSEK SES!!",
-    class: 'btnLogo',
-    style: 'opacity: 0.5; margin: 2px; box-sizing: border-box; border: none; display: flex; max-width:'+$precalibration.height()+'px; background: transparent;',
+    class: "btnLogo",
+    style:
+      "opacity: 0.5; margin: 2px; box-sizing: border-box; border: none; display: flex; max-width:" +
+      $precalibration.height() +
+      "px; background: transparent;",
   }).appendTo($precalibration);
   $donebutton.powerTip();
 
-  const $icon = $('<img>', {
-      class: 'btnImg',
-      src: 'https://www.svgrepo.com/show/457931/done-round.svg',
-      alt: 'done icon',
-      style: 'height: 100%; background: transparent; filter:invert(1)',
+  const $icon = $("<img>", {
+    class: "btnImg",
+    src: "https://www.svgrepo.com/show/457931/done-round.svg",
+    alt: "done icon",
+    style: "height: 100%; background: transparent; filter:invert(1)",
   }).appendTo($donebutton);
 
   $donebutton.hover(
-      function() {
-          $donebutton.css('opacity', '1');
-          $icon.css('filter', 'invert(1) sepia(1) hue-rotate(75deg)');
-          $icon.css('height','100%')
-      },
-      function() {
-          $donebutton.css('opacity', '0.5');
-          $icon.css('filter', 'invert(1)');
-      }
+    function () {
+      $donebutton.css("opacity", "1");
+      $icon.css("filter", "invert(1) sepia(1) hue-rotate(75deg)");
+      $icon.css("height", "100%");
+    },
+    function () {
+      $donebutton.css("opacity", "0.5");
+      $icon.css("filter", "invert(1)");
+    }
   );
 
-  $donebutton.on('mousedown', function(){
-      $icon.css('filter', 'invert(1) sepia(1) hue-rotate(280deg)');
-      $icon.css('padding','10%')
+  $donebutton.on("mousedown", function () {
+    $icon.css("filter", "invert(1) sepia(1) hue-rotate(280deg)");
+    $icon.css("padding", "10%");
   });
 
-  $donebutton.on('mouseup', function(){
-      $icon.css('filter', 'invert(1) sepia(1) hue-rotate(75deg)');
-      $icon.css('padding','6px');
-      calibrationDialog();
+  $donebutton.on("mouseup", function () {
+    $icon.css("filter", "invert(1) sepia(1) hue-rotate(75deg)");
+    $icon.css("padding", "6px");
+    calibrationDialog();
   });
-
 }
 
-function calibrationDialog(){
-  document.head.appendChild(Object.assign(document.createElement("script"),{src:"https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.js"}));
+function calibrationDialog() {
+  document.head.appendChild(
+    Object.assign(document.createElement("script"), {
+      src:
+        "https://cdnjs.cloudflare.com/ajax/libs/regression/2.0.1/regression.js",
+    })
+  );
   $cdialog = $("<div>", {
     id: "cdialog",
     class: "nestedSection large",
@@ -491,49 +526,61 @@ function calibrationDialog(){
     flexDirection: "row",
   }).appendTo($cdialog);
 
-
   // tamamlandı düğmesi
   const $ctamamlandı = $("<span>", {
     class: "actionlink",
     role: "button",
     text: "100 db Değerini Griniz",
     marginLeft: "4px",
-    onclick: "$vslider.slider('value',100)",
+    style: "font-size: 1,2em",
+    onclick:
+      "$vslider.slider('value',100); masterGain.gain.setTargetAtTime(1,context.currentTime+0.5);",
   }).appendTo($paragraph);
 
+  const $stamamlandı = $("<span>", {
+    class: "actionlink",
+    role: "button",
+    text: "Tamamlandı",
+    marginLeft: "4px",
+    style: "font-size: 1,2em",
+    onclick: "calibrationstart()",
+  }).appendTo($paragraph);
+  $stamamlandı.hide();
 
-
-// sliderı düzenle
-  $vslider.on( "slidechange", (event,ui) => {
+  // sliderı düzenle
+  $vslider.on("slidechange", (event, ui) => {
     $sliderValue.text(Math.round(dbFromGain(masterGain.gain.value)));
-    addRowTocTable2(ui.value,masterGain.gain.value,dbFromGain(masterGain.gain.value));
-    console.log(event, ui);
-  } );
-
-
+    addRowTocTable2(
+      ui.value,
+      masterGain.gain.value,
+      dbFromGain(masterGain.gain.value)
+    );
+  });
 
   //calibration table
 
-  var $tablecontainer = $("<div>", {class: "content"}).appendTo($calibslide)
-  var $cdataTable = $("<table>", { class: "license" }).appendTo($tablecontainer);
-  $cdataTable.css({ border: "1px solid #333",});
-  $("<tr>").each(function() {
-    var array1 = ["Slider", "Gain", "Db", "Ölçülen"];
-    var $headerCells = array1.map(header => $("<th>", { text: header })
-      .css({
-        border: "1px solid #333",
-        paddingLeft: "5px"
-      })
-    );
-    $(this).append($headerCells);
-  }).appendTo($cdataTable);
-
-  var $stamamlandı = false;
+  var $tablecontainer = $("<div>", { class: "content" }).appendTo($calibslide);
+  var $cdataTable = $("<table>", { class: "license" }).appendTo(
+    $tablecontainer
+  );
+  $cdataTable.css({ border: "1px solid #333" });
+  $("<tr>")
+    .each(function () {
+      var array1 = ["Slider", "Gain", "Db", "Ölçülen"];
+      var $headerCells = array1.map((header) =>
+        $("<th>", { text: header }).css({
+          border: "1px solid #333",
+          paddingLeft: "5px",
+        })
+      );
+      $(this).append($headerCells);
+    })
+    .appendTo($cdataTable);
 
   function addRowTocTable2(sliderVal, gainVal, dbVal) {
     // create table row element
     var $row = $("<tr>").appendTo($cdataTable);
-    console.log(sliderVal,gainVal,dbVal);
+    console.log(sliderVal, gainVal, dbVal);
     // create table cells for slider, gain, and db values
     $("<td>", { text: sliderVal }).appendTo($row);
     $("<td>", { text: gainVal }).appendTo($row);
@@ -544,18 +591,22 @@ function calibrationDialog(){
       $("<td>").appendTo($row)
     );
 
+    setTimeout($measuredInput.focus(), 100);
+
     var enterKeyPressed = false;
 
-    $measuredInput.on("keydown", function(event) {
-      if (event.keyCode === 13 && $measuredInput.val() !== "") { // enter key
+    $measuredInput.on("keydown", function (event) {
+      if (event.keyCode === 13 && $measuredInput.val() !== "") {
+        // enter key
         confirmValue();
         enterKeyPressed = true;
-      } else if (event.keyCode === 27) { // esc key
+      } else if (event.keyCode === 27) {
+        // esc key
         deleteRow();
       }
     });
 
-    $measuredInput.on("blur", function() {
+    $measuredInput.on("blur", function () {
       if ($measuredInput.val() !== "" && !enterKeyPressed) {
         confirmValue();
       } else if ($measuredInput.val() === "" && !enterKeyPressed) {
@@ -569,21 +620,14 @@ function calibrationDialog(){
     function confirmValue() {
       $row.appendTo($cdataTable);
       $measuredInput.attr("disabled", true); // disable input field after confirming value
-      calparams[gainVal]=$measuredInput.val();
-      if (dbVal >= 99){
-        $ctamamlandı.text ("En az 6 Değer Ölçünüz");
-        $ctamamlandı.click(function(){});
+      calparams[gainVal] = $measuredInput.val();
+      if (dbVal >= 99) {
+        $ctamamlandı.text("En az 6 Değer Ölçünüz");
+        $ctamamlandı.click(function () {});
       }
-      if (Object.keys(calparams).length > 7){
-          $ctamamlandı.remove();
-          if (!$stamamlandı.length){
-          const $stamamlandı = $("<span>", {
-          class: "actionlink",
-          role: "button",
-          text: "Tamamlandı",
-          marginLeft: "4px",
-          onclick: "calibrationstart()",
-        }).appendTo($paragraph);}
+      if (Object.keys(calparams).length > 7) {
+        $ctamamlandı.remove();
+        $stamamlandı.show();
       }
     }
 
@@ -594,98 +638,118 @@ function calibrationDialog(){
   }
 }
 
-function slidersMaxx(){
-  var offset= 0.99-Math.max(...currentLevel);
+function slidersMaxx() {
+  var offset = 0.99 - Math.max(...currentLevel);
   for (var i = 0; i < iNUMBERBANDS; ++i) {
-      currentLevel[i] = Math.min(0.99, currentLevel[i] + offset);
-      randomCounter = 0; //anim
-      $("#s" + i).slider("value", currentLevel[i]);
+    currentLevel[i] = Math.min(0.99, currentLevel[i] + offset);
+    randomCounter = 0; //anim
+    $("#s" + i).slider("value", currentLevel[i]);
   }
 }
 
 function calibrationstart() {
-        const pairsArray = Object.entries(calparams)
-      .filter(([key]) => key !== "done")
-      .map(([key, value]) => [parseFloat(key), parseInt(value)]);
+  const pairsArray = Object.entries(calparams)
+    .filter(([key]) => key !== "done")
+    .map(([key, value]) => [parseFloat(key), parseInt(value)]);
 
-      console.log(pairsArray);
-    const logarithmicc = regression.logarithmic(pairsArray,{presicion:5});
-    const powerc = regression.power(pairsArray,{ precision:5});
-    calibsec (logarithmicc,powerc);
+  console.log(pairsArray);
+  const logarithmicc = regression.logarithmic(pairsArray, { presicion: 5 });
+  const powerc = regression.power(pairsArray, { precision: 5 });
+  calibsec(logarithmicc, powerc);
 }
 
-function calibsec (logarithmicc,powerc) {
+function calibsec(logarithmicc, powerc) {
   console.log(logarithmicc);
   console.log(powerc);
-    $("#cdialog > div > div").hide();
-    $('<h1>',{
-        text: 'Kalibrasyon Değerleri'
-    }).appendTo($cdialog);
+  $("#cdialog > div > div").hide();
+  $("<h1>", {
+    text: "Kalibrasyon Değerleri",
+  }).appendTo($cdialog);
 
-    $('<p>',{
-        html: "Varsayılan Gainden Db hesaplama Formülü:<b><br> Db = MaxDb + 20* log(Gain)</b> <br> 20 katsayısı 16-30 arasında değişebiliyor bu değişim ses sisteminin gücü ortamın büyüklüğünden etkilenebiliyor."
-    }).appendTo($cdialog);
+  $("<p>", {
+    html:
+      "Varsayılan Gainden Db hesaplama Formülü:<b><br> Db = MaxDb + 20* log(Gain)</b> <br> 20 katsayısı 16-30 arasında değişebiliyor bu değişim ses sisteminin gücü ortamın büyüklüğünden etkilenebiliyor.",
+  }).appendTo($cdialog);
 
-    // Sçenekeleri Göster
-    const $radiosWrapper = $('<div>', {
-      class: 'radios-wrapper',
-    }).appendTo($cdialog);
-    var maxvals=Math.max(...Object.values(calparams))
-    // Define the radio options as an array of objects
-    const radioOptions = [
-      { value: ['L',maxvals,24, "?"] , label: "y= "+ maxvals + "+ 24*log(x)" },
-      { value: ['L',logarithmicc.equation[0], parseFloat(logarithmicc.equation[1]/Math.LOG10E).toFixed(4), logarithmicc.r2], label: "y= "+logarithmicc.equation[0] + "+ "+  parseFloat(logarithmicc.equation[1]/Math.LOG10E).toFixed(4) +"*log(x)" },
-      //{ value: ['P',powerc.equation[0],powerc.equation[1],powerc.r2], label: powerc.string }
-    ];
+  // Sçenekeleri Göster
+  const $radiosWrapper = $("<div>", {
+    class: "radios-wrapper",
+  }).appendTo($cdialog);
+  var maxvals = Math.max(...Object.values(calparams));
+  // Define the radio options as an array of objects
+  const radioOptions = [
+    {
+      value: ["L", maxvals, 24, "?"],
+      label: "y= " + maxvals + "+ " + calfactor + "*log(x)",
+    },
+    {
+      value: [
+        "L",
+        logarithmicc.equation[0],
+        parseFloat(logarithmicc.equation[1] / Math.LOG10E).toFixed(4),
+        logarithmicc.r2,
+      ],
+      label:
+        "y= " +
+        logarithmicc.equation[0] +
+        "+ " +
+        parseFloat(logarithmicc.equation[1] / Math.LOG10E).toFixed(4) +
+        "*log(x)",
+    },
+    //{ value: ['P',powerc.equation[0],powerc.equation[1],powerc.r2], label: powerc.string }
+  ];
 
-    // Loop through the radio options and create a div with a label and radio button for each
-    radioOptions.forEach(option => {
-      const $radioWrapper = $('<h1>', {
-          text: option.label,
-      }).appendTo($radiosWrapper);
+  // Loop through the radio options and create a div with a label and radio button for each
+  radioOptions.forEach((option) => {
+    const $radioWrapper = $("<h1>", {
+      text: option.label,
+    }).appendTo($radiosWrapper);
 
+    const $radioButton = $("<input>", {
+      type: "radio",
+      id: option.value,
+      name: "radio-group",
+      value: option.value,
+    })
+      .prependTo($radioWrapper)
+      .css({
+        transform: "scale(1.5)", // Increase radio button size by 50%
+        "margin-right": "8px", // Add spacing between radio button and label
+        "margin-left": "4px",
+      });
 
-        const $radioButton = $('<input>', {
-          type: 'radio',
-          id: option.value,
-          name: 'radio-group',
-          value: option.value,
-      }).prependTo($radioWrapper).css({
-          'transform': 'scale(1.5)', // Increase radio button size by 50%
-          'margin-right': '8px', // Add spacing between radio button and label
-          'margin-left': '4px'
-        });
-
-      const $radioLabel = $('<label>', {
-        text: option.label,
-        for: option.value,
+    const $radioLabel = $("<label>", {
+      text: option.label,
+      for: option.value,
     }).appendTo($radioButton);
 
-        $('<span>',{
-        html: "R<sup>2</sup> = " + option.value[3],
-        style: 'float:right;'
+    $("<span>", {
+      html: "R<sup>2</sup> = " + option.value[3],
+      style: "float:right;",
     }).appendTo($radioWrapper);
+  });
 
-    });
+  // Add confirm button
+  const $confirmButton = $("<button>", {
+    text: "Confirm",
+  }).appendTo($cdialog);
 
-    // Add confirm button
-    const $confirmButton = $('<button>', {
-      text: 'Confirm',
-    }).appendTo($cdialog);
-
-    // Add event listener to confirm button
-    $confirmButton.on('click', () => {
-      const selectedOption = $('input[name="radio-group"]:checked').val().split(',');
-      $cdialog.remove();
-      console.log(selectedOption);
-      calparams["done"]=1;
-      calparams["eq"]=selectedOption;
-      maxDbval = parseFloat(calparams.eq[1]);
-      calfactor = parseFloat(calparams.eq[2]);
-      return(selectedOption);
-    });
+  // Add event listener to confirm button
+  $confirmButton.on("click", () => {
+    const selectedOption = $('input[name="radio-group"]:checked')
+      .val()
+      .split(",");
+    $cdialog.remove();
+    console.log(selectedOption);
+    calparams["done"] = 1;
+    calparams["eq"] = selectedOption;
+    //sliderı eski haline getiri
+    $vslider.on("slidechange", (event, ui) => {});
+    maxDbval = parseFloat(calparams.eq[1]);
+    calfactor = parseFloat(calparams.eq[2]);
+    return selectedOption;
+  });
 }
-
 
 function sortDatabyx(obj) {
   // Get an array of key-value pairs from the object
@@ -725,7 +789,6 @@ Array.from(document.styleSheets).forEach((styleSheet) => {
   }
 });
 
-
 const $playerBtn = $("<button>", {
   height: "3em",
   width: "2.4em",
@@ -747,10 +810,12 @@ const $stopSvgIcon = $("<img>", {
 $playerBtn.on("click", (event) => {
   if (bMUTE) {
     sortDatabyx(graphData);
+    pSliderSnap($pslider.slider("value"));
     var startindex = timepoints.indexOf($pslider.slider("value"));
     $pslider.slider("disable");
     $vslider.slider("disable");
-    masterGain.gain.value = cdialogromDb(graphData[startindex].y);
+    $chartTime.data.datasets[0].dragData = false;
+    masterGain.gain.value = gainFromDb(graphData[startindex].y);
     handleVolume(startindex);
     toggleMute();
     updateButtons();
@@ -774,21 +839,23 @@ $playerBtn.on("click", (event) => {
       dataStream.db = dbFromGain(masterGain.gain.value);
       dataStream.gain = masterGain.gain.value;
       dataStream.time = context.currentTime;
-      if ($pslider.slider("value") + 70 > timepoints[startindex+1]) {
+      if ($pslider.slider("value") + 70 > timepoints[startindex + 1]) {
         handleVolume(startindex + 1);
         startindex = startindex + 1;
       }
       console.log(dataStream);
+      $vslider.slider("value", Math.cbrt(masterGain.gain.value) * 100);
       $pslider.slider("value", $pslider.slider("value") + 100);
       $sliderValue.text(Math.round(dataStream.db));
     }, 100);
   } else {
-    masterGain.gain.cancelAndHoldAtTime(context.currentTime);
+    masterGain.gain.cancelScheduledValues(context.currentTime + 0.05);
     toggleMute();
     pSliderSnap($pslider.slider("value"));
     $pslider.slider("enable");
     $vslider.slider("enable");
-    $vslider.slider("value",Math.cbrt(masterGain.gain.value)*100);
+    $chartTime.data.datasets[0].dragData = true;
+    $vslider.slider("value", Math.cbrt(masterGain.gain.value) * 100);
     setTimeout(() => {
       enableButton(
         [
@@ -815,7 +882,7 @@ $playerBtn.on("click", (event) => {
 function handleVolume(i) {
   targetgain = gainFromDb(graphData[i + 1].y);
   targetime = (graphData[i + 1].x - graphData[i].x) / 1000;
-  timecons = (graphData[i + 1].x - graphData[i].x) / 10000;
+  timecons = (graphData[i + 1].x - graphData[i].x) / 8000;
 
   if (graphData[i].seg == "R") {
     masterGain.gain.setTargetAtTime(
@@ -841,9 +908,9 @@ function handleVolume(i) {
       "masterGain.gain.linearRampToValueAtTime(" +
         targetgain +
         " ," +
-        (context.currentTime +
-        targetime)+
-        ");",targetime
+        (context.currentTime + targetime) +
+        ");",
+      targetime
     );
   }
 }
@@ -865,7 +932,7 @@ function baslaPlayer() {
   $pslider = $("<div>", {
     id: "pslider",
     style:
-      "position: relative;  height: 1em; background: #0b3e6f url('https://download.jqueryui.com/themeroller/images/ui-bg_diagonals-thick_15_0b3e6f_40x40.png') 50% 50% repeat; color: #f6f6f6; font-weight: bold;  margin-right: 20px; margin-top: auto; margin-bottom: auto;",
+      "position: relative;  height: 1.3em; background: #0b3e6f url('https://download.jqueryui.com/themeroller/images/ui-bg_diagonals-thick_15_0b3e6f_40x40.png') 50% 50% repeat; color: #f6f6f6; font-weight: bold;  margin-right: 20px; margin-top: auto; margin-bottom: auto;",
     //  class: "ui-corner-all ui-widget ui-widget-content",
     role: "slider",
   }).appendTo($playerWrapper);
@@ -955,7 +1022,7 @@ function drawGraph(array1) {
                 const y =
                   yFrom +
                   (yTo - yFrom) *
-                    (1 - Math.exp(-(x - xFrom) / ((xTo - xFrom) / 6)));
+                    (1 - Math.exp(-(x - xFrom) / ((xTo - xFrom) / 8)));
                 ctx.lineTo(x, y);
               }
               ctx.stroke();
@@ -992,6 +1059,19 @@ function drawGraph(array1) {
           pointHoverRadius: 20,
           specialDraw: true,
         },
+        {
+          data: [{ x: 20000, y: 97, seg: "L" }],
+          backgroundColor: "rgba(99, 220, 90, 0.8)",
+          borderColor: "rgb(99, 200, 90)",
+          // backgroundColor: "rgb(255, 99, 132)",
+          borderWidth: 7,
+          pointBorderWidth: 4,
+          pointRadius: 12,
+          pointHitRadius: 30,
+          pointHoverRadius: 15,
+          specialDraw: false,
+          pointStyle: "cross",
+        },
       ],
     },
     options: {
@@ -1019,7 +1099,7 @@ function drawGraph(array1) {
             stepSize: 5,
           },
         },
-        y: { type: "logarithmic", ticks: { min: 50 } },
+        y: { type: "linear", ticks: { min: 50 } },
       },
       plugins: {
         legend: { display: false },
@@ -1059,34 +1139,44 @@ function drawGraph(array1) {
           onDragEnd: function (e, datasetIndex, index, value) {
             e.target.style.cursor = "default";
             tooltipItems = e;
+            if (datasetIndex == 1) {
+              $chartTime.data.datasets[datasetIndex - 1].data.push(value);
+              $chartTime.data.datasets[datasetIndex].data = [
+                {
+                  x: 20000,
+                  y: 97,
+                  seg: "L",
+                },
+              ];
+              $chartTime.update();
+            } else {
+              var button = document.createElement("button");
+              button.innerText = value.seg == "L" ? "R" : "L";
+              button.onclick = function () {
+                value.seg == "L" ? (value.seg = "R") : (value.seg = "L");
+                button.parentNode.removeChild(button);
+              };
 
-            $chartTime.data.datasets[datasetIndex].data = sortDatabyx(
-              $chartTime.data.datasets[datasetIndex].data
-            );
-            graphData = $chartTime.data.datasets[datasetIndex].data;
-            $chartTime.update();
-            var button = document.createElement("button");
-            button.innerText = "Click me!";
-            button.onclick = function () {
-              alert("Button clicked!");
-            };
-
-            var xPos = e.offsetX;
-            var yPos = e.offsetY;
-
-            // Set the button styles
-            button.style.position = "absolute";
-            button.style.left = xPos + "px";
-            button.style.top = yPos + 20 + "px";
-
-            // Append the button to the chart wrapper element
-            $chartWrapper.append(button);
-            // Remove the button after a delay
-            setTimeout(function () {
-              button.parentNode.removeChild(button);
-            }, 5000);
-
-            return "";
+              var xPos = e.offsetX;
+              var yPos = e.offsetY;
+              // Set the button styles
+              button.style.position = "absolute";
+              button.style.left = xPos - 30 + "px";
+              button.style.top = yPos + 45 + "px";
+              // Append the button to the chart wrapper element
+              $chartWrapper.append(button);
+              // Remove the button after a delay
+              $chartTime.data.datasets[datasetIndex].data = sortDatabyx(
+                $chartTime.data.datasets[datasetIndex].data
+              );
+              graphData = $chartTime.data.datasets[datasetIndex].data;
+              setTimeout(function () {
+                button.parentNode.removeChild(button);
+              }, 5000);
+              pSliderSnap($pslider.slider("value"));
+              $chartTime.update();
+              return "";
+            }
           },
         },
         streaming: false,
@@ -1096,3 +1186,50 @@ function drawGraph(array1) {
     plugins: [specialDraw],
   });
 }
+
+function exportGraphData() {
+  // Create an input element to hold the graphData
+  input = JSON.stringify(graphData);
+  // Alert the user that the text has been copied
+  prompt("Zaman Ses Verisini Kopyalayın: ", input);
+}
+
+function importGraphData() {
+  try {
+    graphData = JSON.parse(prompt("Zaman Ses Verisini yapıştırın: "));
+  } catch (error) {
+    alert(JSON.stringify(error));
+  }
+}
+
+// tooltip için
+$("#north").powerTip({
+  placement: "n",
+  smartPlacement: true,
+});
+// tooltip için
+$(".actionlink").powerTip({
+  placement: "n",
+  smartPlacement: true,
+});
+
+/*
+  const $addData = $("<img>", {
+    src: "https://www.svgrepo.com/show/498940/add-circle.svg",
+    class: "smallbtnimage myIMageButton",
+    alt: "add Data Point",
+    style: 'position:fixe; marginLeft"4; 1.1 em;',
+  }).appendTo($chartTime);
+
+  const $editData = $("<img>", {
+    src: "https://www.svgrepo.com/show/503019/edit.svg",
+    class: "smallbtnimage",
+    alt: "add Data Point",
+  });
+
+  const $removeData = $("<img>", {
+    src: "https://www.svgrepo.com/show/498946/cancel-circle.svg",
+    class: "smallbtnimage",
+    alt: "add Data Point",
+  });
+}*/
