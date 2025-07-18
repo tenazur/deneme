@@ -1,3 +1,4 @@
+//version 1.4 18/07/2025
 //load scripts in order
 const scriptsOrdered = [
   {
@@ -373,11 +374,11 @@ $(function () {
     create: function (event) {
       $sliderValue.appendTo($vslider.parent());
       sliderUpdate(25);
+      $vslider.slider("value", 100);
     },
   });
 });
 
-$vslider.slider("value", 100);
 
 $sliderValue.hover(
   function () {
